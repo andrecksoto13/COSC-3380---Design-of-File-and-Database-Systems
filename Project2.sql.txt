@@ -1,0 +1,292 @@
+/*Andreck Soto */
+/*Summer 2020 */
+
+
+/* 1.a CREATE Patient Table  (1)*/ 
+CREATE TABLE patient (
+    patientID          INTEGER,
+    patientFirstName   CHAR(20),
+    patienthLastName   CHAR(20),
+    patientAddress     CHAR(20),
+    patientCity        CHAR(20),
+    patientState       CHAR(20),
+    patientZip         CHAR(20),
+    patientBalance     FLOAT,
+    PRIMARY KEY ( patientID) 
+);
+
+/* -----------------------------------------------------------*/
+
+/* 1.a CREATE therapist Table (2) */
+CREATE TABLE therapist (
+    therapistID         CHAR(15),
+    therapistFirstName   CHAR(15),
+    therapistLastName    CHAR(15),
+    therapistStreet      CHAR(20),
+    therapistCity        CHAR(20),
+    therapistState       CHAR(20),
+    therapistZip         CHAR(20),
+    PRIMARY KEY ( therapistID )
+);
+
+/* -----------------------------------------------------------*/
+
+/* 1.a CREATE Therapies Table (3) */
+CREATE TABLE therapies( 
+therapyCode         INTEGER, 
+descrip         CHAR(40),
+unitOfTime         CHAR(10), 
+PRIMARY KEY (therapyCode)
+);
+
+/* -----------------------------------------------------------*/
+
+/* 1.a CREATE therapySession (4) */
+CREATE TABLE therapysession (
+    sessionNum      INTEGER,
+    sessionDate     CHAR(80),
+    patientID       INTEGER,
+    sessionLength   INTEGER,
+    therapistID     CHAR(15),
+    therapyID       INTEGER,
+    PRIMARY KEY (sessionNum),
+    FOREIGN KEY ( patientID )
+        REFERENCES patient,
+    FOREIGN KEY ( therapistID )
+        REFERENCES therapist,
+    FOREIGN KEY ( therapyID )
+        REFERENCES therapies
+);
+
+/* 1.a CREATE CodeUpdate Table (5) */
+CREATE TABLE codeupdates (
+	dateChange DATE,
+	sessionNum INTEGER,
+	patientNum INTEGER,
+	oldTherapyCode INTEGER,	
+	newTherapyCode INTEGER,
+	PRIMARY KEY (sessionNum)
+);
+
+
+
+/* -----------------------------------------------------------*/
+/* -----------------------------------------------------------*/
+
+
+/* 1.a CREATE VIEW therapistReport  (6)*/
+CREATE VIEW therapistReport("AppoinmentDate","TherapistLastName", "TherapistFirstName", "PatientLastName", "PatientFirstName")
+AS
+SELECT p.patienthLastName, p.patientFirstName, t.therapistLastName, t.therapistFirstName, ts.sessionDate
+FROM PATIENT  p, THERAPYSESSION ts, THERAPIST t
+WHERE p.patientID = ts.patientID AND t.therapistID = ts.therapistID;
+
+/* 1.CREATE VIEW ScheduleReport (7) */
+CREATE VIEW ScheduleReport("TherapistID", "TherapistLastName", "TherapistFirstName", "theDate") 
+AS 
+SELECT t.therapistID, t.therapistLastName, t.therapistFirstName ,ts.sessionDate
+From THERAPIST t, THERAPYSESSION ts
+ORDER BY therapistLastName, therapistLastName;
+
+
+/* 1.CREATE VIEW PATIENT REPORT(8) */
+Create VIEW patientReport ("TherapistID", "TherapistLastName", "TherapistFirstName", "theDate") 
+AS 
+SELECT p.patienthLasName, p.patientFirstName, ts.sessionNum, ts.sessionDate, patientID);
+FROM  PATIENT p, THERAPYSESSION ts
+WHEREV p.patientID = ts.patientID;
+
+
+
+/* -----------------------------------------------------------*/
+/* -----------------------------------------------------------*/
+
+/* 2 INSERT patient (1)*/
+
+INSERT INTO Patient VALUES(1010, 'Koehler', 'Robbie', '119 West Bay Dr.', 'San Vista', 'TX','72510', 1535.15);
+INSERT INTO Patient VALUES(1011, 'King', 'Joseph', '941 Treemont', 'Oak Hills', 'TX','74081', 212.80);
+INSERT INTO Patient VALUES(1012, 'Houghland', 'Susan', '7481 Lake Side Dr.', 'Munster', 'TX','72380', 1955.40);
+INSERT INTO Patient VALUES(1013, 'Falls', 'Tierra', '44 Applewood Ave.', 'Palm Rivers', 'TX','72511', 1000.35);
+INSERT INTO Patient VALUES(1014, 'Odepaul', 'Ben', '546 WCR 150 South', 'Munster', 'TX','74093', 525.00);
+INSERT INTO Patient VALUES(1015, 'Venable', 'Isaiah', '37 High School Road', 'Waterville', 'TX','74183', 432.30);
+INSERT INTO Patient VALUES(1016, 'Waggoner', 'Brianna', '2691 Westgrove St.', 'Delbert', 'TX','72381', 714.25);
+INSERT INTO Patient VALUES(1017, 'Short', 'Tobey', '1928 10th Ave.', 'Munster', 'TX','72512', 967.60);
+INSERT INTO Patient VALUES(1018, 'Baptist', 'Joseph', '300 Erin Dr.', 'Waterville', 'TX','76658', 1846.75);
+INSERT INTO Patient VALUES(1019, 'Culling', 'Latisha', '4238 East 71st St.', 'San Vista', 'TX','74071', 1988.50);
+INSERT INTO Patient VALUES(1020, 'Marino', 'Andre', '919 Horton Ave.', 'Georgetown', 'TX','72379', 688.95);
+INSERT INTO Patient VALUES(1021, 'Wilson', 'Tammy', '424 October Blvd', 'Waterville', 'TX','76658', 2015.30);
+
+/* -----------------------------------------------------------*/
+/* 2 INSERT therapist (2)*/
+INSERT INTO Therapist VALUES('AS648','Shields','Athony','5222 Eagle Court','Palm Rivers','TX','72511');
+INSERT INTO Therapist VALUES('BM273','McClain','Bridgette','385 West Mill St.','Waterville','TX','76658');
+INSERT INTO Therapist VALUES('JR085','Risk','Jonathan','1010 650 North','Palm Rivers','TX','72511');
+INSERT INTO Therapist VALUES('SN852','Nair','Saritha','25 North Elm St.','Livewood','TX','72512');
+INSERT INTO Therapist VALUES('SW124','Wilder','Steven','7354 Rockville Road','San Vista','TX','72510');
+
+ /* -----------------------------------------------------------*/
+/* 2 INSERT Therapies (3)*/
+INSERT INTO Therapies VALUES(90901, 'Biofeedback training by any modality', NULL);
+INSERT INTO Therapies VALUES(92240, 'Shoulder Strapping', NULL);
+INSERT INTO Therapies VALUES(92507, 'Treatment of speech', '15');
+INSERT INTO Therapies VALUES(92530, 'Knee strapping', NULL);
+INSERT INTO Therapies VALUES(92540, 'Ankle and/or foot strapping', NULL);
+INSERT INTO Therapies VALUES(95831, 'Extremity or trunk muscle testing', NULL);
+INSERT INTO Therapies VALUES(97010, 'Hot or cold pack application', NULL);
+INSERT INTO Therapies VALUES(97012, 'Mechanical traction', NULL);
+INSERT INTO Therapies VALUES(97014, 'Electrical stimulation', NULL);
+INSERT INTO Therapies VALUES(97016, 'Vasopneumatic devices', NULL);
+INSERT INTO Therapies VALUES(97018, 'Paraffin bath', NULL);
+INSERT INTO Therapies VALUES(97022, 'Whirlpool', NULL);
+INSERT INTO Therapies VALUES(97026, 'Infrared', NULL);
+INSERT INTO Therapies VALUES(97032, 'Electrical Stimulation', '15');
+INSERT INTO Therapies VALUES(97033, 'Iontophoresis', '15');
+INSERT INTO Therapies VALUES(97035, 'Ultrasound', '15');
+INSERT INTO Therapies VALUES(97039, 'Unlisted modality', '15');
+INSERT INTO Therapies VALUES(97110, 'Therapeutic exercises to develop strength and endurance, range of motion, and flexibility', '15');
+INSERT INTO Therapies VALUES(97112, 'Neuromuscular re-education of movement, balance, coordination, etc', '15');
+INSERT INTO Therapies VALUES(97113, 'Aquatic therapy with therapeutic exercises', '15');
+INSERT INTO Therapies VALUES(97116, 'Gait training', '15');
+INSERT INTO Therapies VALUES(97124, 'Massage', '15');
+INSERT INTO Therapies VALUES(97139, 'Unlisted therapeutic procedure', NULL);
+INSERT INTO Therapies VALUES(97140, 'Manual therapy techniques', '15');
+INSERT INTO Therapies VALUES(97150, 'Group therapeutic procedure', '15');
+INSERT INTO Therapies VALUES(97530, 'Dynamic activities to improve functional performance, direct(one-on-one) with the patient', '15');
+INSERT INTO Therapies VALUES(97535, 'Self-care/home management training', '15');
+INSERT INTO Therapies VALUES(97750, 'Physical performance test or measurement', '15');
+INSERT INTO Therapies VALUES(97799, 'Unlisted physical medicine/rehabilation service or procedure', NULL);
+INSERT INTO Therapies VALUES(98941, 'CMT of the spine', NULL);
+INSERT INTO Therapies VALUES(98960, 'Education and training for patient self-management', '30');
+/* -----------------------------------------------------------*/
+
+/* 2 INSERT TherapieSession (4)*/
+INSERT INTO therapySession VALUES(27,2021-10-10,1011, 45, 'JR085', 92507);
+INSERT INTO therapySession VALUES(28,2021-11-10,1016, 30, 'AS648', 97010);
+INSERT INTO therapySession VALUES(29,2021-11-10,1014, 60, 'SW124', 97014);
+INSERT INTO therapySession VALUES(30,2021-12-10,1013, 30, 'BM273', 97033);
+INSERT INTO therapySession VALUES(31,2021-10-15,1016, 90, 'AS648', 98960);
+Insert INTO therapySession VALUES(32,2021-10-16,1018, 15, 'JR085', 97035);
+INSERT INTO therapySession VALUES(33,2021-10-17,1017, 60, 'SN852', 97039);
+INSERT INTO therapySession VALUES(34,2021-10-17,1015, 45, 'BM273', 97112);
+INSERT INTO therapySession VALUES(35,2021-10-18,1010, 30, 'SW124', 97113);
+INSERT INTO therapySession VALUES(36,2021-10-18,1019, 75, 'SN852', 97116);
+INSERT INTO therapySession VALUES(37,2021-10-19,1020, 30, 'BM273', 97124);
+INSERT INTO therapySession VALUES (38,2021-10-19,1021,60,'AS648',97535);
+
+/* -----------------------------------------------------------*/
+/* -----------------------------------------------------------*/
+
+/* 3.1 */
+SELECT *
+FROM patient p
+ORDER BY p.patientcity;
+
+/* -----------------------------------------------------------*/
+
+/* 3.2 */
+SELECT p.patithLastName, p.patientFirstName
+FROM patient p
+WHERE p.patientBalce > 1000
+
+/* -----------------------------------------------------------*/
+
+/* 3.3 */
+SELECT ts.sessionLength 
+FROM therapySession ts, patient p
+WHERE ts.patientID = p.patientID AND p.patientLastName = 'Shields'
+
+
+/* -----------------------------------------------------------*/
+
+/* 3.4 */
+SELECT COUNT (*)
+FROM Therapies
+
+/* -----------------------------------------------------------*/
+
+/* 3.5 */
+SELECT descrip unitOfTime
+FROM therapies t
+WHERE descrip LIKE %bath% OR  descrip LIKE %HOT% descrip LIKE %Electrical%
+
+/* -----------------------------------------------------------*/
+
+/* 3.6 */
+SELECT ts.sessionDate, t.therapistLastName, t.therapistFirstName
+FROM theray Session ts, therapist t
+WHERE t.therapistID = ts.therapistID
+ORDER BY ts.sessionDate
+
+/* -----------------------------------------------------------*/
+
+/* 3.7 */
+SELECT p.patientID, p.patienthLastName, p.patientFirstName, ts.sessionDate, ts.sessionNum 
+FROM patient p, therapySession ts 
+WHERE ts.patientID = p.patientID
+ORDER BY ts.sessionDate,p.patienthLastName, p.patientFirstName;
+
+/* -----------------------------------------------------------*/
+
+/* 3.8 */
+SELECT sessionDate, p.patienthLastName
+FROM patient p, therapySession ts 
+WHERE ts.patientID = p.patientID
+
+/* -----------------------------------------------------------*/
+/* -----------------------------------------------------------*/
+/* -----------------------------------------------------------*/
+/* -----------------------------------------------------------*/
+/* -----------------------------------------------------------*/
+/* -----------------------------------------------------------*/
+			/*PROJECT 3*/
+
+/* 1a CREATE OR REPLACE PROCEDURE patientquery */
+
+CREATE OR REPLACE PROCEDURE patientquery (
+    psessionnumber INTEGER
+) 
+
+IS
+    snum         INTEGER;
+    sdate        CHAR(80);
+    pnum         INTEGER;
+    plastname    CHAR(80);
+    pfirstname   CHAR(80);
+BEGIN SELECT
+    ts.sessionnum,
+    ts.patientid,
+    ts.sessiondate,
+    p.patienthlastname,
+    p.patientfirstname
+INTO 
+    snum,         
+    sdate,      
+    pnum, 
+    plastname,
+     pfirstname
+FROM
+    therapysession   ts,
+    patient          p
+WHERE
+    ts.sessionnum = psessionnumber
+    AND ts.patientID = p.patientID; 
+    
+    END;
+
+/* -----------------------------------------------------------*/
+
+/*1b EXEC patientquery */
+
+EXEC patientquery(30);
+EXEC patientquery(35);
+
+/* -----------------------------------------------------------*/
+
+/*2a  CREATE Trigger CodeUpdate */
+CREATE Trigger CodeUpdate
+AFTER UPDATE OF therapyID ON therapySession 
+FOR EACH ROW BEGIN 
+INSERT INTO CodeUpdates ( dateChange , sessionNum , patientNum , oldTherapyCode , newTherapyCode ) 
+SELECT  ts.sessionDate, ts.sessionNum, p.patientID, :OLD.therapyID , :NEW.therapyID       
+FROM therapySession  ts, patient p; 
+END; 
